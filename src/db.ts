@@ -1,4 +1,6 @@
 import { createRequire } from "module";
+import fs from "fs";
+import path from "path";
 
 export type DbStatement = {
   get: (...params: unknown[]) => unknown;
@@ -222,11 +224,15 @@ class MemoryDb implements Db {
   }
 }
 
-export function initDb(path: string): Db {
+export function initDb(dbPath: string): Db {
   const require = createRequire(import.meta.url);
   try {
+    if (dbPath !== ":memory:") {
+      const resolved = pathModuleDir(dbPath);
+      fs.mkdirSync(resolved, { recursive: true });
+    }
     const Database = require("better-sqlite3");
-    const db = new Database(path);
+    const db = new Database(dbPath);
     db.pragma("journal_mode = WAL");
     db.exec(`
       CREATE TABLE IF NOT EXISTS users (
@@ -287,6 +293,14 @@ export function initDb(path: string): Db {
     }
     return new MemoryDb();
   }
+}
+
+function pathModuleDir(dbPath: string): string {
+  const parsed = path.parse(dbPath);
+  if (parsed.ext) {
+    return parsed.dir || ".";
+  }
+  return dbPath || ".";
 }
 
 export function logAudit(
