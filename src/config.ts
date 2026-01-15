@@ -21,7 +21,8 @@ const envSchema = z.object({
   SIGN_GAME_WINDOW_MS: z.coerce.number().int().positive().optional(),
   FAUCET_WINDOW_MS: z.coerce.number().int().positive().optional(),
   FAUCET_USDT_AMOUNT: z.coerce.number().positive().optional(),
-  FAUCET_METH_AMOUNT: z.coerce.number().positive().optional()
+  FAUCET_METH_AMOUNT: z.coerce.number().positive().optional(),
+  CORS_ORIGINS: z.string().optional()
 });
 
 const env = envSchema.parse(process.env);
@@ -44,6 +45,9 @@ export const config = {
   signGameWindowMs: env.SIGN_GAME_WINDOW_MS ?? 10 * 60 * 1000,
   faucetWindowMs: env.FAUCET_WINDOW_MS ?? 24 * 60 * 60 * 1000,
   faucetUsdtAmount: env.FAUCET_USDT_AMOUNT ?? 1000,
-  faucetMethAmount: env.FAUCET_METH_AMOUNT ?? 0.1
+  faucetMethAmount: env.FAUCET_METH_AMOUNT ?? 0.1,
+  corsOrigins: env.CORS_ORIGINS
+    ? env.CORS_ORIGINS.split(",").map((origin) => origin.trim()).filter(Boolean)
+    : []
 };
 

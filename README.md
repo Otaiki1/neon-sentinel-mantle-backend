@@ -37,6 +37,7 @@ Optional (feature-gated):
 -   `SIGN_GAME_LIMIT`, `SIGN_GAME_WINDOW_MS`
 -   `FAUCET_WINDOW_MS`
 -   `FAUCET_USDT_AMOUNT`, `FAUCET_METH_AMOUNT`
+-   `CORS_ORIGINS` (comma-separated allowed origins)
 
 ## API Documentation
 

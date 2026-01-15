@@ -2,6 +2,7 @@ import express from "express";
 import helmet from "helmet";
 import morgan from "morgan";
 import rateLimit from "express-rate-limit";
+import cors from "cors";
 import type { Db } from "./db.js";
 import { registerApiRoutes } from "./routes/api.js";
 import type { ethers } from "ethers";
@@ -27,11 +28,19 @@ export type AppDeps = {
 
 export type AppOptions = {
   ipRateLimitPerMinute?: number;
+  corsOrigins?: string[];
 };
 
 export function createApp(deps: AppDeps, options: AppOptions = {}) {
   const app = express();
   app.use(helmet());
+  const allowedOrigins = options.corsOrigins ?? [];
+  app.use(
+    cors({
+      origin: allowedOrigins.length ? allowedOrigins : true,
+      credentials: true
+    })
+  );
   app.use(express.json({ limit: "1mb" }));
   app.use(morgan("combined"));
 

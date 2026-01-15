@@ -6,30 +6,31 @@ All endpoints accept and return JSON.
 
 ## Auth & Rate Limits
 
-- Public endpoints are rate-limited by IP and wallet.
-- If rate limited, you will receive `429` with `{ error: "rate_limited" }`.
+-   Public endpoints are rate-limited by IP and wallet.
+-   If rate limited, you will receive `429` with `{ error: "rate_limited" }`.
 
 ## Environment Requirements
 
 These must be configured on the backend:
 
-- `TRUSTED_SIGNER_PRIVATE_KEY`
-- `ECDSA_VERIFIER_ADDRESS`
-- `CHAIN_ID`
-- `RPC_URL`
+-   `TRUSTED_SIGNER_PRIVATE_KEY`
+-   `ECDSA_VERIFIER_ADDRESS`
+-   `CHAIN_ID`
+-   `RPC_URL`
 
 Optional:
 
-- `NEON_IDENTITY_ADDRESS` (enables on-chain verification checks)
-- `USDT_ADDRESS`, `METH_ADDRESS`, `FAUCET_SIGNER_PRIVATE_KEY`
+-   `NEON_IDENTITY_ADDRESS` (enables on-chain verification checks)
+-   `USDT_ADDRESS`, `METH_ADDRESS`, `FAUCET_SIGNER_PRIVATE_KEY`
+-   `CORS_ORIGINS` (comma-separated list of allowed frontend origins)
 
 ## Common Errors
 
-- `400` `{ error: "invalid_request" }`
-- `403` `{ error: "identity_not_verified" }`
-- `409` `{ error: "duplicate_run" | "already_verified" }`
-- `429` `{ error: "rate_limited" | "already_claimed" }`
-- `500` `{ error: "faucet_not_configured" }`
+-   `400` `{ error: "invalid_request" }`
+-   `403` `{ error: "identity_not_verified" }`
+-   `409` `{ error: "duplicate_run" | "already_verified" }`
+-   `429` `{ error: "rate_limited" | "already_claimed" }`
+-   `500` `{ error: "faucet_not_configured" }`
 
 ---
 
@@ -38,6 +39,7 @@ Optional:
 **GET** `/health`
 
 **Response**
+
 ```
 { "ok": true }
 ```
@@ -49,6 +51,7 @@ Optional:
 **POST** `/sign-identity`
 
 **Request**
+
 ```
 {
   "wallet": "0xabc...",
@@ -57,13 +60,15 @@ Optional:
 ```
 
 **Response**
+
 ```
 { "signature": "0x..." }
 ```
 
 **Notes**
-- EIP-712 domain: `ECDSAVerifier` / version `1`
-- Primary type: `IdentityRegistration(commitment,uint256 wallet,address)`
+
+-   EIP-712 domain: `ECDSAVerifier` / version `1`
+-   Primary type: `IdentityRegistration(commitment,uint256 wallet,address)`
 
 ---
 
@@ -72,6 +77,7 @@ Optional:
 **POST** `/game/run/raw`
 
 **Request (example)**
+
 ```
 {
   "wallet": "0xabc...",
@@ -82,6 +88,7 @@ Optional:
 ```
 
 **Response**
+
 ```
 {
   "runHash": "0x...",
@@ -90,8 +97,9 @@ Optional:
 ```
 
 **Notes**
-- `runHash` is a deterministic `keccak256` of a stable JSON representation.
-- `extractionValue` is derived from `score` or summed `events[].value` (fallback `0`).
+
+-   `runHash` is a deterministic `keccak256` of a stable JSON representation.
+-   `extractionValue` is derived from `score` or summed `events[].value` (fallback `0`).
 
 ---
 
@@ -100,6 +108,7 @@ Optional:
 **POST** `/sign-game-run`
 
 **Request (minimum)**
+
 ```
 {
   "wallet": "0xabc...",
@@ -110,6 +119,7 @@ Optional:
 ```
 
 **Request (with raw data validation)**
+
 ```
 {
   "wallet": "0xabc...",
@@ -125,6 +135,7 @@ Optional:
 ```
 
 **Response**
+
 ```
 {
   "signature": "0x...",
@@ -136,9 +147,10 @@ Optional:
 ```
 
 **Notes**
-- EIP-712 domain: `ECDSAVerifier` / version `1`
-- Primary type: `GameRunSubmission(runHash,extractionValue,identityCommitment,player)`
-- If `raw` is provided, the backend recomputes `runHash` and `extractionValue`.
+
+-   EIP-712 domain: `ECDSAVerifier` / version `1`
+-   Primary type: `GameRunSubmission(runHash,extractionValue,identityCommitment,player)`
+-   If `raw` is provided, the backend recomputes `runHash` and `extractionValue`.
 
 ---
 
@@ -147,6 +159,7 @@ Optional:
 **POST** `/faucet`
 
 **Request**
+
 ```
 {
   "wallet": "0xabc...",
@@ -155,6 +168,7 @@ Optional:
 ```
 
 **Response**
+
 ```
 {
   "txHash": "0x...",
@@ -165,8 +179,9 @@ Optional:
 ```
 
 **Notes**
-- `token` defaults to `"USDT"`.
-- Requires `FAUCET_SIGNER_PRIVATE_KEY` + token address set.
+
+-   `token` defaults to `"USDT"`.
+-   Requires `FAUCET_SIGNER_PRIVATE_KEY` + token address set.
 
 ---
 
@@ -175,6 +190,7 @@ Optional:
 **GET** `/user/:wallet`
 
 **Response**
+
 ```
 {
   "wallet": "0xabc...",
@@ -185,4 +201,3 @@ Optional:
   "updatedAt": "2025-01-01T00:00:00.000Z"
 }
 ```
-
